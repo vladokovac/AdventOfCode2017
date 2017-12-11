@@ -17,7 +17,8 @@ public class Main {
         // ());
 
         // Day 2
-        // System.out.printf(String.valueOf(CalculateMatrixChecksum
+//        System.out.println(calculateMatrixChecksum1(PuzzleInputs.day2));
+//        System.out.println(calculateMatrixChecksum2(PuzzleInputs.day2));
 
         // Day 3
         // GetDistanceToSpiralCenter(325489);
@@ -52,7 +53,7 @@ public class Main {
      * @param matrixString Input.
      * @return The calculated checksum.
      */
-    public static int CalculateMatrixChecksum(String matrixString) {
+    private static int calculateMatrixChecksum1(String matrixString) {
         int checksum = 0;
 
         String[] matrixRows = matrixString.split("\n");
@@ -72,6 +73,44 @@ public class Main {
             }
 
             checksum += maxValue - minValue;
+        }
+
+        return checksum;
+    }
+
+    /**
+     * Calculates checksum by following the rule: Checksum = sum of one even division from each row in the matrix.
+     * @param matrixString Input matrix.
+     * @return The calculated checksum.
+     */
+    private static int calculateMatrixChecksum2(String matrixString) {
+        int checksum = 0;
+
+        String[] matrixRows = matrixString.split("\n");
+        for (String row : matrixRows) {
+            String[] rowElements = row.split("\t");
+            int maxValue = Integer.MIN_VALUE;
+            int minValue = Integer.MAX_VALUE;
+
+            for (int i = 0; i < rowElements.length; i++) {
+                boolean hasFoundDivisibleElements = false;
+                int elemValue1 = Integer.valueOf(rowElements[i]);
+                for (int j = 0; j < rowElements.length; j++) {
+                    if (i == j) {
+                        continue;
+                    }
+                    int elemValue2 = Integer.valueOf(rowElements[j]);
+
+                    if (elemValue1 / elemValue2 > 0 && elemValue1 % elemValue2 == 0) {
+                        checksum += elemValue1/elemValue2;
+                        hasFoundDivisibleElements = true;
+                        break;
+                    }
+                }
+                if (hasFoundDivisibleElements) {
+                    break;
+                }
+            }
         }
 
         return checksum;
