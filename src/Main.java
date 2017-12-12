@@ -25,11 +25,15 @@ public class Main {
 
         // Day 7
         String nodeInput = "pbga (66)\n" + "xhth (57)\n" + "ebii (61)\n" + "havc (66)\n" + "ktlj (57)\n" +
-                    "fwft (72) -> ktlj, cntj, xhth\n" + "qoyq (66)\n" + "padx (45) -> pbga, havc, qoyq\n" +
-                    "tknk (41) -> ugml, padx, fwft\n" + "jptl (61)\n" + "ugml (68) -> gyxo, ebii, jptl\n" +
-                    "gyxo (61)\n" + "cntj (57)";
+                "fwft (72) -> ktlj, cntj, xhth\n" + "qoyq (66)\n" + "padx (45) -> pbga, havc, qoyq\n" +
+                "tknk (41) -> ugml, padx, fwft\n" + "jptl (61)\n" + "ugml (68) -> gyxo, ebii, jptl\n" +
+                "gyxo (61)\n" + "cntj (57)";
         String bottomNodeName = getBottomNodeName(nodeInput);
-        System.out.println(getNodeValueChange(PuzzleInputs.day7));
+//        System.out.println(getNodeValueChange(PuzzleInputs.day7));
+
+        // Day 8
+        System.out.println(parseJumpInstructions1(PuzzleInputs.day8));
+        System.out.println(parseJumpInstructions2(PuzzleInputs.day8));
     }
 
     public static int SumRepeatingDigits(String digits) {
@@ -80,6 +84,7 @@ public class Main {
 
     /**
      * Calculates checksum by following the rule: Checksum = sum of one even division from each row in the matrix.
+     *
      * @param matrixString Input matrix.
      * @return The calculated checksum.
      */
@@ -102,7 +107,7 @@ public class Main {
                     int elemValue2 = Integer.valueOf(rowElements[j]);
 
                     if (elemValue1 / elemValue2 > 0 && elemValue1 % elemValue2 == 0) {
-                        checksum += elemValue1/elemValue2;
+                        checksum += elemValue1 / elemValue2;
                         hasFoundDivisibleElements = true;
                         break;
                     }
@@ -472,5 +477,118 @@ public class Main {
             node = node.getParent();
         }
         return node;
+    }
+
+    /**
+     * Parses jump instructions that manipulate register values for an unknown amount of registers.
+     * @param instructions The jump instructions.
+     * @return The largest register value after all instructions were parsed.
+     */
+    private static int parseJumpInstructions1(String instructions) {
+        int largestRegisterValue = 0;
+
+        String[] instructionArray = instructions.split("\n");
+
+        Map<String, Integer> registerValues = new HashMap<String, Integer>();
+        for (String singleInstruction : instructionArray) {
+            String[] words = singleInstruction.split(" ");
+            String registerName = words[0];
+            String command = words[1];
+            Integer increaseValue = Integer.valueOf(words[2]);
+            String conditionLeft = words[4];
+            Integer conditionRight = Integer.valueOf(words[6]);
+            String conditionOperator = words[5];
+            int registerValue = registerValues.containsKey(registerName) ? registerValues.get(registerName) : 0;
+
+            int conditionLeftValue = registerValues.containsKey(conditionLeft) ? registerValues.get(conditionLeft) : 0;
+            boolean isConditionMet = false;
+            if (conditionOperator.equals("<")) {
+                isConditionMet = conditionLeftValue < conditionRight;
+            } else if (conditionOperator.equals("==")) {
+                isConditionMet = conditionLeftValue == conditionRight;
+            } else if (conditionOperator.equals(">")) {
+                isConditionMet = conditionLeftValue > conditionRight;
+            } else if (conditionOperator.equals("<=")) {
+                isConditionMet = conditionLeftValue <= conditionRight;
+            } else if (conditionOperator.equals(">=")) {
+                isConditionMet = conditionLeftValue >= conditionRight;
+            } else if (conditionOperator.equals("!=")) {
+                isConditionMet = conditionLeftValue != conditionRight;
+            } else {
+                throw new IllegalArgumentException("Unknown operator detected.");
+            }
+
+            if (isConditionMet) {
+                if (command.toLowerCase().equals("inc")) {
+                    registerValue += increaseValue;
+                } else if (command.toLowerCase().equals("dec")) {
+                    registerValue -= increaseValue;
+                } else {
+                    throw new IllegalArgumentException("Unknown command detected.");
+                }
+                registerValues.put(registerName, registerValue);
+            }
+        }
+
+        for (Integer value : registerValues.values()) {
+            largestRegisterValue = value > largestRegisterValue ? value : largestRegisterValue;
+        }
+
+        return largestRegisterValue;
+    }
+
+    /**
+     * Parses jump instructions that manipulate register values for an unknown amount of registers.
+     * @param instructions The jump instructions.
+     * @return The largest register value held in any register during any step of the process.
+     */
+    private static int parseJumpInstructions2(String instructions) {
+        int largestRegisterValue = 0;
+
+        String[] instructionArray = instructions.split("\n");
+
+        Map<String, Integer> registerValues = new HashMap<String, Integer>();
+        for (String singleInstruction : instructionArray) {
+            String[] words = singleInstruction.split(" ");
+            String registerName = words[0];
+            String command = words[1];
+            Integer increaseValue = Integer.valueOf(words[2]);
+            String conditionLeft = words[4];
+            Integer conditionRight = Integer.valueOf(words[6]);
+            String conditionOperator = words[5];
+            int registerValue = registerValues.containsKey(registerName) ? registerValues.get(registerName) : 0;
+
+            int conditionLeftValue = registerValues.containsKey(conditionLeft) ? registerValues.get(conditionLeft) : 0;
+            boolean isConditionMet = false;
+            if (conditionOperator.equals("<")) {
+                isConditionMet = conditionLeftValue < conditionRight;
+            } else if (conditionOperator.equals("==")) {
+                isConditionMet = conditionLeftValue == conditionRight;
+            } else if (conditionOperator.equals(">")) {
+                isConditionMet = conditionLeftValue > conditionRight;
+            } else if (conditionOperator.equals("<=")) {
+                isConditionMet = conditionLeftValue <= conditionRight;
+            } else if (conditionOperator.equals(">=")) {
+                isConditionMet = conditionLeftValue >= conditionRight;
+            } else if (conditionOperator.equals("!=")) {
+                isConditionMet = conditionLeftValue != conditionRight;
+            } else {
+                throw new IllegalArgumentException("Unknown operator detected.");
+            }
+
+            if (isConditionMet) {
+                if (command.toLowerCase().equals("inc")) {
+                    registerValue += increaseValue;
+                } else if (command.toLowerCase().equals("dec")) {
+                    registerValue -= increaseValue;
+                } else {
+                    throw new IllegalArgumentException("Unknown command detected.");
+                }
+                registerValues.put(registerName, registerValue);
+                largestRegisterValue = registerValue > largestRegisterValue ? registerValue : largestRegisterValue;
+            }
+        }
+
+        return largestRegisterValue;
     }
 }
