@@ -15,7 +15,7 @@ public class AdventNode {
         _name = name;
         _weight = weight;
         _parent = null;
-        _children = new HashSet<>();
+        _children = new HashSet<AdventNode>();
     }
 
     public AdventNode getParent() {
