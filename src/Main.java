@@ -183,7 +183,7 @@ public class Main {
         String[] splitPassphrases = passphrases.split("\n");
 
         for (String pass : splitPassphrases) {
-            Set<String> stringsSet = new HashSet<>();
+            Set<String> stringsSet = new HashSet<String>();
             String[] words = pass.split(" ");
             boolean isValid = true;
             for (String word : words) {
@@ -208,7 +208,7 @@ public class Main {
         String[] splitPassphrases = passphrases.split("\n");
 
         for (String pass : splitPassphrases) {
-            Set<String> stringsSet = new HashSet<>();
+            Set<String> stringsSet = new HashSet<String>();
             String[] words = pass.split(" ");
             boolean isValid = true;
             for (String word : words) {
@@ -234,7 +234,7 @@ public class Main {
         int steps = 0;
 
         String[] splitMaze = maze.split("\n");
-        List<Integer> mazeList = new ArrayList<>();
+        List<Integer> mazeList = new ArrayList<Integer>();
         for (String mazePoint : splitMaze) {
             mazeList.add(Integer.valueOf(mazePoint));
         }
@@ -255,7 +255,7 @@ public class Main {
         int steps = 0;
 
         String[] splitMaze = maze.split("\n");
-        List<Integer> mazeList = new ArrayList<>();
+        List<Integer> mazeList = new ArrayList<Integer>();
         for (String mazePoint : splitMaze) {
             mazeList.add(Integer.valueOf(mazePoint));
         }
@@ -282,7 +282,7 @@ public class Main {
             blocks[i] = Integer.valueOf(splitData[i]);
         }
 
-        Set<String> seenCombinations = new HashSet<>();
+        Set<String> seenCombinations = new HashSet<String>();
         String combinationString = "";
 
         while (!seenCombinations.contains(combinationString)) {
@@ -364,7 +364,7 @@ public class Main {
 
     private static int getNodeValueChange(String input) {
         AdventNode root = loadNodes(input);
-        List<AdventNode> nodeList = new ArrayList<>();
+        List<AdventNode> nodeList = new ArrayList<AdventNode>();
         nodeList.add(root);
         AdventNode differentNode = null;
 
@@ -421,7 +421,7 @@ public class Main {
 
     private static AdventNode loadNodes(String input) {
         String[] inputLines = input.split("\n");
-        Map<String, AdventNode> nodeDictionary = new HashMap<>();
+        Map<String, AdventNode> nodeDictionary = new HashMap<String, AdventNode>();
 
         // Load single nodes first, we'll connect them later
         for (String singleLine : inputLines) {
