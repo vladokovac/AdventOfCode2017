@@ -32,8 +32,13 @@ public class Main {
 //        System.out.println(getNodeValueChange(PuzzleInputs.day7));
 
         // Day 8
-        System.out.println(parseJumpInstructions1(PuzzleInputs.day8));
-        System.out.println(parseJumpInstructions2(PuzzleInputs.day8));
+//        System.out.println(parseJumpInstructions1(PuzzleInputs.day8));
+//        System.out.println(parseJumpInstructions2(PuzzleInputs.day8));
+
+        // Day 9
+        String input = PuzzleInputs.day9;
+//        System.out.println(calculateStreamScore(input, 0));
+        System.out.println(countGarbageInStream(input));
     }
 
     public static int SumRepeatingDigits(String digits) {
@@ -481,6 +486,7 @@ public class Main {
 
     /**
      * Parses jump instructions that manipulate register values for an unknown amount of registers.
+     *
      * @param instructions The jump instructions.
      * @return The largest register value after all instructions were parsed.
      */
@@ -539,6 +545,7 @@ public class Main {
 
     /**
      * Parses jump instructions that manipulate register values for an unknown amount of registers.
+     *
      * @param instructions The jump instructions.
      * @return The largest register value held in any register during any step of the process.
      */
@@ -591,4 +598,122 @@ public class Main {
 
         return largestRegisterValue;
     }
+
+    private static int calculateStreamScore(String inputStream, int scoreAbove) {
+
+        if (inputStream.length() == 0) {
+            return 0;
+        }
+
+        int groupValue = scoreAbove + 1;
+        int streamScore = 0;
+        boolean isInGarbageBlock = false;
+
+        int openGroups = 0;
+        List<String> groupsBelowThis = new ArrayList<String>();
+        int openGroupIndex = inputStream.length();
+        int closeGroupIndex = 0;
+        boolean ignoreNextChar = false;
+        for (int i = 0; i < inputStream.toCharArray().length; i++) {
+
+            char c = inputStream.toCharArray()[i];
+            if (ignoreNextChar) {
+                ignoreNextChar = false;
+                continue;
+            }
+            switch (c) {
+                case '{':
+                    if (isInGarbageBlock) {
+                        continue;
+                    }
+                    if (openGroups == 0) {
+                        openGroupIndex = i + 1;
+                    }
+                    openGroups++;
+                    break;
+                case '}':
+                    if (isInGarbageBlock) {
+                        continue;
+                    }
+                    openGroups--;
+                    if (openGroups == 0) {
+                        closeGroupIndex = i;
+                    }
+                    break;
+                case '<':
+                    isInGarbageBlock = true;
+                    break;
+                case '>':
+                    isInGarbageBlock = false;
+                    break;
+                case '!':
+                    ignoreNextChar = true;
+                    break;
+                default:
+                    break;
+            }
+
+            if (openGroupIndex <= closeGroupIndex) {
+                groupsBelowThis.add(inputStream.substring(openGroupIndex, closeGroupIndex));
+                openGroupIndex = inputStream.length();
+                closeGroupIndex = 0;
+            }
+        }
+
+        streamScore += groupValue * groupsBelowThis.size();
+
+        for (String group : groupsBelowThis) {
+            streamScore += calculateStreamScore(group, scoreAbove + 1);
+        }
+
+        return streamScore;
+    }
+
+    private static int countGarbageInStream(String inputStream) {
+
+        if (inputStream.length() == 0) {
+            return 0;
+        }
+        int garbageCount = 0;
+        boolean isInGarbageBlock = false;
+
+        int openGroups = 0;
+        List<String> groupsBelowThis = new ArrayList<String>();
+        int openGroupIndex = inputStream.length();
+        int closeGroupIndex = 0;
+        int garbageInBlock = 0;
+        boolean ignoreNextChar = false;
+        for (int i = 0; i < inputStream.toCharArray().length; i++) {
+
+            char c = inputStream.toCharArray()[i];
+            if (ignoreNextChar) {
+                ignoreNextChar = false;
+                continue;
+            }
+            switch (c) {
+                case '<':
+                    openGroups++;
+                    if (openGroups == 1) {
+                        continue;
+                    }
+                    break;
+                case '>':
+                    openGroups--;
+                    continue;
+                case '!':
+                    ignoreNextChar = true;
+                    continue;
+                default:
+                    break;
+            }
+
+            if (openGroups > 0) {
+                garbageCount++;
+            }
+        }
+
+        return garbageCount;
+    }
+
+
 }
