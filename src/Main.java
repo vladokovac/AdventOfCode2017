@@ -37,6 +37,7 @@ public class Main {
 
         // Day 9
         String input = PuzzleInputs.day9;
+//        input = "<{o\"i!a,<{i<a>";
 //        System.out.println(calculateStreamScore(input, 0));
         System.out.println(countGarbageInStream(input));
     }
@@ -670,19 +671,13 @@ public class Main {
     }
 
     private static int countGarbageInStream(String inputStream) {
-
         if (inputStream.length() == 0) {
             return 0;
         }
-        int garbageCount = 0;
         boolean isInGarbageBlock = false;
 
-        int openGroups = 0;
-        List<String> groupsBelowThis = new ArrayList<String>();
-        int openGroupIndex = inputStream.length();
-        int closeGroupIndex = 0;
-        int garbageInBlock = 0;
         boolean ignoreNextChar = false;
+        int garbageCount = 0;
         for (int i = 0; i < inputStream.toCharArray().length; i++) {
 
             char c = inputStream.toCharArray()[i];
@@ -691,29 +686,38 @@ public class Main {
                 continue;
             }
             switch (c) {
-                case '<':
-                    openGroups++;
-                    if (openGroups == 1) {
+                case '{':
+                    if (isInGarbageBlock) {
+                        garbageCount++;
                         continue;
                     }
                     break;
+                case '}':
+                    if (isInGarbageBlock) {
+                        garbageCount++;
+                        continue;
+                    }
+                    break;
+                case '<':
+                    if (isInGarbageBlock) {
+                        garbageCount++;
+                    }
+                    isInGarbageBlock = true;
+                    break;
                 case '>':
-                    openGroups--;
-                    continue;
+                    isInGarbageBlock = false;
+                    break;
                 case '!':
                     ignoreNextChar = true;
                     continue;
                 default:
+                    if (isInGarbageBlock) {
+                        garbageCount++;
+                    }
                     break;
-            }
-
-            if (openGroups > 0) {
-                garbageCount++;
             }
         }
 
         return garbageCount;
     }
-
-
 }
