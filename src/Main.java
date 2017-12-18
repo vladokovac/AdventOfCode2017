@@ -36,11 +36,17 @@ public class Main {
 //        System.out.println(parseJumpInstructions2(PuzzleInputs.day8));
 
         // Day 9
-        String input = PuzzleInputs.day9;
+//        String input = PuzzleInputs.day9;
 //        input = "<{o\"i!a,<{i<a>";
 //        System.out.println(calculateStreamScore(input, 0));
-        System.out.println(countGarbageInStream(input));
+//        System.out.println(countGarbageInStream(input));
+
+        // Day 10
+        String input = "";
+        System.out.println(calculateKnotHash(5, input));
+//        System.out.println(calculateKnotHash(256, PuzzleInputs.day10));
     }
+
 
     public static int SumRepeatingDigits(String digits) {
         int sum = 0;
@@ -719,5 +725,73 @@ public class Main {
         }
 
         return garbageCount;
+    }
+
+    /**
+     * Calculates the sum of the first two elements after the knot hash algorithm is applied.
+     *
+     * @param size    The size of the input array. The array is created as [0 .. <code>size</code>]
+     * @param lengths The rotations that are to be performed on the input array.
+     * @return The sum of the first two elements after the hash is determined.
+     */
+    private static int calculateKnotHash(int size, String lengths) {
+        // Create input array
+        int[] inputArray = new int[size];
+        for (int i = 0; i < size; i++) {
+            inputArray[i] = i;
+        }
+
+        Character[] staticChars = new Character[5];
+        staticChars[0] = 17;
+        staticChars[1] = 31;
+        staticChars[2] = 73;
+        staticChars[3] = 47;
+        staticChars[4] = 23;
+
+        int currentIndex = 0;
+        int skipSize = 0;
+        for (int round = 0; round < 64; round++) {
+            for (int i = 0; i < lengths.length() + staticChars.length; i++) {
+                int swapAmount = 0;
+                if (i < lengths.length()) {
+                    swapAmount = lengths.charAt(i);
+                } else {
+                    swapAmount = staticChars[i % lengths.length()];
+                }
+                reverseSubArray(inputArray, currentIndex, currentIndex + swapAmount - 1);
+                currentIndex = (currentIndex + swapAmount + skipSize) % size;
+                skipSize++;
+            }
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 15; i++) {
+            String blockHash = "";
+            int value = 0;
+            for (int j = 0; j < 15; j++) {
+                value ^= inputArray[16 * i + j];
+            }
+            sb.append(Integer.toHexString(value));
+        }
+
+        return inputArray[0] * inputArray[1];
+    }
+
+
+    private static void reverseSubArray(int[] input, int startIndex, int endIndex) {
+        if (startIndex >= endIndex) {
+            return;
+        }
+
+        while (startIndex < endIndex) {
+            int circularStart = startIndex % input.length;
+            int circularEnd = endIndex % input.length;
+            int temp = input[circularStart];
+            input[circularStart] = input[circularEnd];
+            input[circularEnd] = temp;
+
+            startIndex++;
+            endIndex--;
+        }
     }
 }
