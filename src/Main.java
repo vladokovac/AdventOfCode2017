@@ -22,6 +22,7 @@ public class Main {
 
         // Day 3
         // GetDistanceToSpiralCenter(325489);
+//        System.out.println(firstLargerValueInSpiral(PuzzleInputs.day3));
 
         // Day 7
         String nodeInput = "pbga (66)\n" + "xhth (57)\n" + "ebii (61)\n" + "havc (66)\n" + "ktlj (57)\n" +
@@ -42,8 +43,8 @@ public class Main {
 //        System.out.println(countGarbageInStream(input));
 
         // Day 10
-        String input = "";
-        System.out.println(calculateKnotHash(5, input));
+//        String input = "";
+//        System.out.println(calculateKnotHash(5, input));
 //        System.out.println(calculateKnotHash(256, PuzzleInputs.day10));
     }
 
@@ -192,6 +193,79 @@ public class Main {
         System.out.println("(" + String.valueOf(x) + "," + String.valueOf(y) + ")");
         System.out.println("Dist: " + distance);
         return distance;
+    }
+
+    /**
+     * Calculates an outward spiral by moving right -> up -> left -> down and repeating. Each coordinate contains a sum
+     * of all its neighbouring values (including diagonals).
+     * @param input The number that's being compared to.
+     * @return The first number that appears in the spiral that is larger than <code>input</code>.
+     */
+    private static int firstLargerValueInSpiral(int input) {
+        int value = 0;
+
+        Map<String, Integer> spiralValues = new HashMap<>();
+        spiralValues.put("0,0", 1);
+
+        // R U LL DD
+        // RRR UUU LLLL DDDD
+        // RRRRR UUUUU LLLLLL DDDDDD
+
+        int steps = 1;
+
+        int x = 0;
+        int y = 0;
+        while (value == 0) {
+            for (int dir = 0; dir < 4; dir++) {
+                int totalMoves = steps;
+                if (dir > 1) {
+                    totalMoves++;
+                }
+                for (int i = 0; i < totalMoves; i++) {
+                    switch (dir) {
+                        case 0:
+                            // Right
+                            x++;
+                            break;
+                        case 1:
+                            // Up
+                            y++;
+                            break;
+                        case 2:
+                            // Left
+                            x--;
+                            break;
+                        case 3:
+                            // Down
+                            y--;
+                            break;
+                        default:
+                            break;
+                    }
+
+                    int neigbourSum = 0;
+                    for (int neighbourX = -1; neighbourX < 2; neighbourX++) {
+                        for (int neighbourY = -1; neighbourY < 2; neighbourY++) {
+                            String neighbourCoord = (x + neighbourX) + "," + (y + neighbourY);
+                            if (spiralValues.containsKey(neighbourCoord)) {
+                                neigbourSum += spiralValues.get(neighbourCoord);
+                            }
+                        }
+                    }
+
+                    String coordKey = x + "," + y;
+                    spiralValues.put(coordKey, neigbourSum);
+                    System.out.println(neigbourSum);
+                    if (neigbourSum > input) {
+                        value = neigbourSum;
+                        break;
+                    }
+                }
+            }
+            steps += 2;
+        }
+
+        return value;
     }
 
     private static int CountValidPassphrases(String passphrases) {
