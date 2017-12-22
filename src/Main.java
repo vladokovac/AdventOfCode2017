@@ -46,6 +46,11 @@ public class Main {
 //        String input = "";
 //        System.out.println(calculateKnotHash(5, input));
 //        System.out.println(calculateKnotHash(256, PuzzleInputs.day10));
+
+        // Day 11
+//        String input = "ne,ne,s,s";
+//        stepsFromHexTile(PuzzleInputs.day11);
+//        maxStepsFromHexTile(PuzzleInputs.day11);
     }
 
 
@@ -198,13 +203,14 @@ public class Main {
     /**
      * Calculates an outward spiral by moving right -> up -> left -> down and repeating. Each coordinate contains a sum
      * of all its neighbouring values (including diagonals).
+     *
      * @param input The number that's being compared to.
      * @return The first number that appears in the spiral that is larger than <code>input</code>.
      */
     private static int firstLargerValueInSpiral(int input) {
         int value = 0;
 
-        Map<String, Integer> spiralValues = new HashMap<>();
+        Map<String, Integer> spiralValues = new HashMap<String, Integer>();
         spiralValues.put("0,0", 1);
 
         // R U LL DD
@@ -867,5 +873,176 @@ public class Main {
             startIndex++;
             endIndex--;
         }
+    }
+
+    private static int stepsFromHexTile(String stepsTaken) {
+        int stepCount = 0;
+
+        String[] stepArray = stepsTaken.split(",");
+
+        float x = 0;
+        float y = 0;
+
+        for (String step : stepArray) {
+            if (step.length() == 1) {
+                switch (step.charAt(0)) {
+                    case 'n':
+                        y++;
+                        break;
+                    case 's':
+                        y--;
+                        break;
+                    default:
+                        break;
+                }
+            } else {
+                switch (step.charAt(0)) {
+                    case 'n':
+                        y += 0.5f;
+                        break;
+                    case 's':
+                        y -= 0.5f;
+                        break;
+                    default:
+                        break;
+
+                }
+                switch (step.charAt(1)) {
+                    case 'w':
+                        x -= 0.5f;
+                        break;
+                    case 'e':
+                        x += 0.5f;
+                        break;
+                    default:
+                        break;
+            }
+        }
+    }
+
+        System.out.println(x + " " + y);
+
+        while (x != 0 || y != 0) {
+        if (x > 0) {
+                if (y > 0) {
+                    // ne
+                    y -= 0.5f;
+                } else {
+                    // se
+                    y += 0.5f;
+
+                }
+                x -= 0.5f;
+            } else if (x < 0) {
+                if (y > 0) {
+                    // nw
+                    y -= 0.5f;
+                } else {
+                    // sw
+                    y += 0.5f;
+                }
+                x += 0.5f;
+            } else {
+                if (y > 0) {
+                    // n
+                    y--;
+                } else {
+                    // s
+                    y++;
+                }
+            }
+            stepCount++;
+        }
+        System.out.println(stepCount);
+        return stepCount;
+    }
+
+    private static int maxStepsFromHexTile(String input) {
+        String[] stepArray = input.split(",");
+
+        float x = 0;
+        float y = 0;
+
+        int maxSteps = 0;
+
+        for (String step : stepArray) {
+            if (step.length() == 1) {
+                switch (step.charAt(0)) {
+                    case 'n':
+                        y++;
+                        break;
+                    case 's':
+                        y--;
+                        break;
+                    default:
+                        break;
+                }
+            } else {
+                switch (step.charAt(0)) {
+                    case 'n':
+                        y += 0.5f;
+                        break;
+                    case 's':
+                        y -= 0.5f;
+                        break;
+                    default:
+                        break;
+
+                }
+                switch (step.charAt(1)) {
+                    case 'w':
+                        x -= 0.5f;
+                        break;
+                    case 'e':
+                        x += 0.5f;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            float tempX = x;
+            float tempY = y;
+            int stepCount = 0;
+            while (tempX != 0 || tempY != 0) {
+                if (tempX > 0) {
+                    if (tempY > 0) {
+                        // ne
+                        tempY -= 0.5f;
+                    } else {
+                        // se
+                        tempY += 0.5f;
+                    }
+                    tempX -= 0.5f;
+                } else if (tempX < 0) {
+                    if (tempY > 0) {
+                        // nw
+                        tempY -= 0.5f;
+                    } else {
+                        // sw
+                        tempY += 0.5f;
+                    }
+                    tempX += 0.5f;
+                } else {
+                    if (tempY > 0) {
+                        // n
+                        tempY--;
+                    } else {
+                        // s
+                        tempY++;
+                    }
+                }
+                stepCount++;
+            }
+            if (maxSteps < stepCount) {
+                maxSteps = stepCount;
+            }
+        }
+
+        System.out.println(x + " " + y);
+
+
+        System.out.println(maxSteps);
+        return maxSteps;
     }
 }
