@@ -17,41 +17,40 @@ public class Main {
         // ());
 
         // Day 2
-//        System.out.println(calculateMatrixChecksum1(PuzzleInputs.day2));
-//        System.out.println(calculateMatrixChecksum2(PuzzleInputs.day2));
+        //        System.out.println(calculateMatrixChecksum1(PuzzleInputs.day2));
+        //        System.out.println(calculateMatrixChecksum2(PuzzleInputs.day2));
 
         // Day 3
         // GetDistanceToSpiralCenter(325489);
-//        System.out.println(firstLargerValueInSpiral(PuzzleInputs.day3));
+        //        System.out.println(firstLargerValueInSpiral(PuzzleInputs.day3));
 
         // Day 7
-//        String nodeInput = "pbga (66)\n" + "xhth (57)\n" + "ebii (61)\n" + "havc (66)\n" + "ktlj (57)\n" +
-//                "fwft (72) -> ktlj, cntj, xhth\n" + "qoyq (66)\n" + "padx (45) -> pbga, havc, qoyq\n" +
-//                "tknk (41) -> ugml, padx, fwft\n" + "jptl (61)\n" + "ugml (68) -> gyxo, ebii, jptl\n" +
-//                "gyxo (61)\n" + "cntj (57)";
-//        String bottomNodeName = getBottomNodeName(nodeInput);
-//        System.out.println(getNodeValueChange(PuzzleInputs.day7));
+        //        String nodeInput = "pbga (66)\n" + "xhth (57)\n" + "ebii (61)\n" + "havc (66)\n" + "ktlj (57)\n" +
+        //                "fwft (72) -> ktlj, cntj, xhth\n" + "qoyq (66)\n" + "padx (45) -> pbga, havc, qoyq\n" +
+        //                "tknk (41) -> ugml, padx, fwft\n" + "jptl (61)\n" + "ugml (68) -> gyxo, ebii, jptl\n" +
+        //                "gyxo (61)\n" + "cntj (57)";
+        //        String bottomNodeName = getBottomNodeName(nodeInput);
+        //        System.out.println(getNodeValueChange(PuzzleInputs.day7));
 
         // Day 8
-//        System.out.println(parseJumpInstructions1(PuzzleInputs.day8));
-//        System.out.println(parseJumpInstructions2(PuzzleInputs.day8));
+        //        System.out.println(parseJumpInstructions1(PuzzleInputs.day8));
+        //        System.out.println(parseJumpInstructions2(PuzzleInputs.day8));
 
         // Day 9
-//        String input = PuzzleInputs.day9;
-//        input = "<{o\"i!a,<{i<a>";
-//        System.out.println(calculateStreamScore(input, 0));
-//        System.out.println(countGarbageInStream(input));
+        //        String input = PuzzleInputs.day9;
+        //        input = "<{o\"i!a,<{i<a>";
+        //        System.out.println(calculateStreamScore(input, 0));
+        //        System.out.println(countGarbageInStream(input));
 
         // Day 10
-//        String input = "";
-//        System.out.println(calculateKnotHash(256, PuzzleInputs.day10));
-
+        //        String input = "";
+        //        System.out.println(calculateKnotHash(256, PuzzleInputs.day10));
+        calculateBigKnotHash(PuzzleInputs.day10);
         // Day 11
-//        String input = "ne,ne,s,s";
-//        stepsFromHexTile(PuzzleInputs.day11);
-//        maxStepsFromHexTile(PuzzleInputs.day11);
+        //        String input = "ne,ne,s,s";
+        //        stepsFromHexTile(PuzzleInputs.day11);
+        //        maxStepsFromHexTile(PuzzleInputs.day11);
     }
-
 
     public static int SumRepeatingDigits(String digits) {
         int sum = 0;
@@ -832,6 +831,64 @@ public class Main {
         return inputArray[0] * inputArray[1];
     }
 
+    private static void calculateBigKnotHash(String input) {
+        char[] staticChars = new char[5];
+        staticChars[0] = 17;
+        staticChars[1] = 31;
+        staticChars[2] = 73;
+        staticChars[3] = 47;
+        staticChars[4] = 23;
+
+        int size = 256;
+
+        int[] inputArray = new int[size];
+        for (int i = 0; i < size; i++) {
+            inputArray[i] = i;
+        }
+
+        int[] lengthArray = new int[input.length() + staticChars.length];
+        for (int i = 0; i < lengthArray.length; i++) {
+            if (i < input.length()) {
+                lengthArray[i] = input.charAt(i);
+            } else {
+                if (input.length() > 0) {
+                    lengthArray[i] = staticChars[i % input.length()];
+                } else {
+                    lengthArray[i] = staticChars[i];
+                }
+            }
+        }
+
+        int skipSize = 0;
+        int currentIndex = 0;
+        for (int i = 0; i < 64; i++) {
+            for (int swapAmount : lengthArray) {
+                reverseSubArray(inputArray, currentIndex, currentIndex + swapAmount - 1);
+                currentIndex = (currentIndex + swapAmount + skipSize) % size;
+                skipSize++;
+            }
+        }
+
+        int[] denseHash = new int[16];
+        for (int block = 0; block < 16; block++) {
+            int blockValue = inputArray[block * 16];
+            for (int i = 1; i < 16; i++) {
+                blockValue = blockValue ^ inputArray[block * 16 + i];
+            }
+            denseHash[block] = blockValue;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (int hashValue : denseHash) {
+            String hexValue = Integer.toHexString(hashValue);
+            if (hexValue.length() == 1) {
+                hexValue = "0" + hexValue;
+            }
+            sb.append(hexValue);
+        }
+
+        System.out.println(sb.toString());
+    }
 
     private static void reverseSubArray(int[] input, int startIndex, int endIndex) {
         if (startIndex >= endIndex) {
@@ -891,14 +948,14 @@ public class Main {
                         break;
                     default:
                         break;
+                }
             }
         }
-    }
 
         System.out.println(x + " " + y);
 
         while (x != 0 || y != 0) {
-        if (x > 0) {
+            if (x > 0) {
                 if (y > 0) {
                     // ne
                     y -= 0.5f;
