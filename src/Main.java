@@ -25,11 +25,11 @@ public class Main {
 //        System.out.println(firstLargerValueInSpiral(PuzzleInputs.day3));
 
         // Day 7
-        String nodeInput = "pbga (66)\n" + "xhth (57)\n" + "ebii (61)\n" + "havc (66)\n" + "ktlj (57)\n" +
-                "fwft (72) -> ktlj, cntj, xhth\n" + "qoyq (66)\n" + "padx (45) -> pbga, havc, qoyq\n" +
-                "tknk (41) -> ugml, padx, fwft\n" + "jptl (61)\n" + "ugml (68) -> gyxo, ebii, jptl\n" +
-                "gyxo (61)\n" + "cntj (57)";
-        String bottomNodeName = getBottomNodeName(nodeInput);
+//        String nodeInput = "pbga (66)\n" + "xhth (57)\n" + "ebii (61)\n" + "havc (66)\n" + "ktlj (57)\n" +
+//                "fwft (72) -> ktlj, cntj, xhth\n" + "qoyq (66)\n" + "padx (45) -> pbga, havc, qoyq\n" +
+//                "tknk (41) -> ugml, padx, fwft\n" + "jptl (61)\n" + "ugml (68) -> gyxo, ebii, jptl\n" +
+//                "gyxo (61)\n" + "cntj (57)";
+//        String bottomNodeName = getBottomNodeName(nodeInput);
 //        System.out.println(getNodeValueChange(PuzzleInputs.day7));
 
         // Day 8
@@ -44,7 +44,6 @@ public class Main {
 
         // Day 10
 //        String input = "";
-//        System.out.println(calculateKnotHash(5, input));
 //        System.out.println(calculateKnotHash(256, PuzzleInputs.day10));
 
         // Day 11
@@ -821,39 +820,15 @@ public class Main {
             inputArray[i] = i;
         }
 
-        Character[] staticChars = new Character[5];
-        staticChars[0] = 17;
-        staticChars[1] = 31;
-        staticChars[2] = 73;
-        staticChars[3] = 47;
-        staticChars[4] = 23;
-
-        int currentIndex = 0;
+        String[] lengthArray = lengths.split(",");
         int skipSize = 0;
-        for (int round = 0; round < 64; round++) {
-            for (int i = 0; i < lengths.length() + staticChars.length; i++) {
-                int swapAmount = 0;
-                if (i < lengths.length()) {
-                    swapAmount = lengths.charAt(i);
-                } else {
-                    swapAmount = staticChars[i % lengths.length()];
-                }
-                reverseSubArray(inputArray, currentIndex, currentIndex + swapAmount - 1);
-                currentIndex = (currentIndex + swapAmount + skipSize) % size;
-                skipSize++;
-            }
+        int currentIndex = 0;
+        for (String length : lengthArray) {
+            int swapAmount = Integer.valueOf(length);
+            reverseSubArray(inputArray, currentIndex, currentIndex + swapAmount - 1);
+            currentIndex = (currentIndex + swapAmount + skipSize) % size;
+            skipSize++;
         }
-
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < 15; i++) {
-            String blockHash = "";
-            int value = 0;
-            for (int j = 0; j < 15; j++) {
-                value ^= inputArray[16 * i + j];
-            }
-            sb.append(Integer.toHexString(value));
-        }
-
         return inputArray[0] * inputArray[1];
     }
 
